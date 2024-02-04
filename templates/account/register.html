@@ -80,7 +80,6 @@
 {#</html>#}
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,63 +95,74 @@
 <body>
 <div class="container">
     <div class="page-header">
-        <h1>考勤管理系统
-            <small>成员信息注册</small>
+        <h1 style="text-align: center">班级协作平台
+
         </h1>
     </div>
+
     <div class="row">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title">成员信息注册</h3>
             </div>
             <div class="panel-body">
+
                 <form id="defaultForm" role="form" class="form-horizontal" action="/register/" method="post">
                     {% csrf_token %}
-                    <div class="form-group">
+                    <div class="form-group" style="text-align: center;">
                         <label for="stu_num" class="col-sm-4 control-label">学号：</label>
-                        <div class="col-sm-4">
-                            <input class="form-control" type="text" name="stu_num" id="stu_num">
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="stu_num" id="stu_num" placeholder="请输入学号">
+                            <br>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="text-align: center;">
                         <label for="username" class="col-sm-4 control-label">用户名：</label>
-                        <div class="col-sm-4">
-                            <input  class="form-control" type="text" name="username" id="username">
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="username" id="username" placeholder="请输入用户名">
+                            <br>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="text-align: center;">
                         <label for="password" class="col-sm-4 control-label">密码：</label>
-                        <div class="col-sm-4">
-                            <input class="form-control" type="password" name="password" id="password">
+                        <div class="col-sm-8">
+                            <input class="form-control" type="password" name="password" id="password"
+                                   placeholder="请输入密码">
+                            <br>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="text-align: center;">
                         <label for="repassword" class="col-sm-4 control-label">确认密码：</label>
-                        <div class="col-sm-4">
-                            <input class="form-control" type="password" name="repassword" id="repassword">
+                        <div class="col-sm-8">
+                            <input class="form-control" type="password" name="repassword" id="repassword"
+                                   placeholder="请确认密码">
+                            <br>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="text-align: center;">
                         <label for="phone" class="col-sm-4 control-label">手机号码：</label>
-                        <div class="col-sm-4">
-                            <input class="form-control" type="text" name="phone" id="phone">
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="phone" id="phone" placeholder="请输入手机号码">
+                            <br>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="text-align: center;">
                         <label for="email" class="col-sm-4 control-label">Email：</label>
-                        <div class="col-sm-4">
-                            <input class="form-control" type="email" name="email" id="email" placeholder="邮箱">
+                        <div class="col-sm-8">
+                            <input class="form-control" type="email" name="email" id="email" placeholder="请输入邮箱">
+                            <br>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="text-align: center;">
                         <label for="class" class="col-sm-4 control-label">Class_id：</label>
-                        <div class="col-sm-4">
-                            <input class="form-control" type="class" name="class" id="class" placeholder="班级代码，由教师提供">
+                        <div class="col-sm-8">
+                            <input class="form-control" type="class" name="class" id="class" placeholder="请输入班级代码">
+                            <br>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-4">
-                            <button class="btn btn-lg btn-primary pull-right" type="submit">确认注册</button>
+                    <div class="form-group" style="text-align: center;">
+                        <div class="col-sm-offset-4 col-sm-6">
+                            <button class="btn btn-lg btn-primary" type="submit" >确认注册</button>
                         </div>
                     </div>
                 </form>

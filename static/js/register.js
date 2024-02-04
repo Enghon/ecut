@@ -135,6 +135,7 @@ $(function () {/* 文档加载，执行一个函数*/
                             message: '请输入11位学号'
                         },
                         regexp: {
+
                             regexp: /^(x?[0-9]){10}|([0-9]{11})$/,
                             message: '请输入正确的学号'
                         }
@@ -175,6 +176,7 @@ $(function () {/* 文档加载，执行一个函数*/
             $.post('/register_verify/', $form.serialize(), function (result) {
 //do something...
                 if(result == 'OK'){
+                    alert('成功');
                     window.location.href='/login/'
                 }
             });

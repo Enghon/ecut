@@ -40,11 +40,6 @@ pip3 freeze > requirements.txt；生成requirements.txt；
 
 
 
-超级管理员账号 admin 密码 Mxzxyh
-
-用户 学号@stu.com 密码 123456
-
-admin@admin.com
 
 
 

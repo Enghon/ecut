@@ -286,7 +286,7 @@ def exam(request):
 
         user_list_with_ratio = list(zip(user_list, ratio_list))
     grades = [
-        {"name": "优秀(90%-100%)", "color": "#008000", "min_point": 0.8999, "max_point": 1.00},
+        {"name": "优秀(90%-100%)", "color": "#008000", "min_point": 0.8999, "max_point": 1.01},
         {"name": "良好(80%-89%)", "color": "#FFA500", "min_point": 0.7999, "max_point": 0.8999},
         {"name": "及格(60%-79%)", "color": "#FFC125", "min_point": 0.6999, "max_point": 0.7999},
         {"name": "不及格(0-59%)", "color": "#FF0000", "min_point": 0.00001, "max_point": 0.5999}
@@ -346,11 +346,12 @@ def member_manage(request):
 # 6. 如果 flag 为假，则渲染 account/page-login.html 模板，并将空字符串作为 error_msg 参数传递给 render 函数，最后返回该模板的响应。
 def delete_member(request):
     (flag, rank) = check_cookie(request)
+    (flag, user) = check_cookie(request)
     if flag:
         if rank.user_type.caption == 'admin':
             delete_sno = request.GET.get('delete_sno')
             UserInfo.objects.get(studentNum=delete_sno).delete()
-            member_list = UserInfo.objects.all()
+            member_list = UserInfo.objects.filter(cid=user.cid)
             return render(request, 'member/member_manage.html', {'member_list': member_list})
         else:
             return render(request, 'member/member_manage_denied.html')
