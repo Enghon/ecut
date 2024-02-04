@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="alert alert-success" role="alert">管理认证成功</div>
+
+
+    {#面板开始#}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">班级管理</h3>
+        </div>
+
+        <!-- 添加模态框（Modal） -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 面板开始 -->
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">添加班级</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label class="control-label" for="name">班级名称</label>
+                                    <input type="text" class="form-control" id="classnameInput" placeholder="请输入班级名称">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 面板结束 -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="add_close_model">提交更改</button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+        <script>
+            document.getElementById("add_close_model").addEventListener("click", function () {
+                var classnameInput = document.getElementById("classnameInput");
+                var classname = classnameInput.value.trim();
+
+                if (classname === "") {
+                    alert("班级名称不能为空");
+                } else {
+                    // 执行提交操作
+                    // ...
+                    // 关闭模态框
+                    $('#myModal').modal('hide');
+                }
+            });
+        </script>
+
+        <!-- /添加模态框结束 -->
+        <!-- 编辑模态框（Modal） -->
+        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {#面板开始#}
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">编辑班级</h3>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label class="control-label" for="name">班级名称</label>
+                                    <input type="text" class="form-control" id="classnameInput" placeholder="请输入班级名称">
+                                </div>
+                            </div>
+                        </div>
+                        {#面板结束#}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary" id="add_close_model">
+                            提交更改
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /编辑模态框结束 -->
+
+
+        <script>
+            $('#myModal').on('click', '#add_close_model', function (ret) {
+
+
+                $add_class_name = $('#myModal #classnameInput').val()
+                $.post('/add_class/', {'add_class_name': $add_class_name}, function (ret) {
+                    alert(ret)
+                })
+                $('#myModal').modal('toggle')
+                window.location.reload(true)
+            })
+            $('#myModal1').on('click', '#add_close_model', function (ret) {
+                $edit_class_name = $('#myModal1 #classnameInput').val()
+                console.log($edit_class_name)
+                $.post('/edit_class/', {
+                    'edit_id': $('table').data('edit_id'),
+                    'edit_class_name': $edit_class_name
+                }, function (ret) {
+                    alert(ret)
+                })
+
+                $('#myModal1').modal('toggle')
+                window.location.reload(true)
+            })
+
+        </script>
+
+        <div class="panel-body">
+            <!--数据表开始-->
+
+
+            <a href="#">
+                <button class="btn btn-success   col-lg-1" data-toggle="modal"
+                        data-target="#myModal" id="add_btn">添加
+                </button>
+            </a>
+
+            <hr>
+
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Class_id</th>
+                        <th>班级</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="classTableBody">
+                    {% for class in class_list %}
+                        <tr class="classRow">
+                            <td>{{ class.id }}</td>
+                            <td>{{ class.name }}</td>
+                            <td>
+                                <span class="hidden">{{ class.id }}</span>
+                                <button class="btn btn-info" id="edit_btn" data-toggle="modal" data-target="#myModal1">
+                                    编辑
+                                </button>
+                                <a href="/delete_class?delete_id={{ class.id }}">
+                                    <button class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="paginationContainer"></div>
+
+            <script>
+                var classRows = document.querySelectorAll('.classRow');
+                var itemsPerPage = 5;
+                var currentPage = 1;
+
+                function showPage(page) {
+                    var startIndex = (page - 1) * itemsPerPage;
+                    var endIndex = startIndex + itemsPerPage;
+
+                    for (var i = 0; i < classRows.length; i++) {
+                        if (i >= startIndex && i < endIndex) {
+                            classRows[i].style.display = 'table-row';
+                        } else {
+                            classRows[i].style.display = 'none';
+                        }
+                    }
+                }
+
+                function createPagination() {
+                    var totalPages = Math.ceil(classRows.length / itemsPerPage);
+
+                    var paginationContainer = document.getElementById('paginationContainer');
+                    paginationContainer.innerHTML = '';
+
+                    for (var i = 1; i <= totalPages; i++) {
+                        var pageLink = document.createElement('a');
+                        pageLink.href = 'javascript:void(0)';
+                        pageLink.textContent = i;
+                        pageLink.addEventListener('click', function () {
+                            currentPage = parseInt(this.textContent);
+                            showPage(currentPage);
+                        });
+
+                        paginationContainer.appendChild(pageLink);
+                    }
+                }
+
+                showPage(currentPage);
+                createPagination();
+            </script>
+
+            <style>
+                #paginationContainer a {
+                    margin-right: 5px;
+                    text-decoration: underline;
+                    cursor: pointer;
+                }
+            </style>
+
+
+            <!--数据表结束-->
+
+            <!--面板底部开始-->
+
+
+            <script>
+
+                $('table').on('click', '#edit_btn', function () {
+                    $('table').data('edit_id', $(this).prev().text())
+                    {#$.post('/edit_class/', {'edit_id':$(this).prev().text()})#}
+                    $edit_class_name = $(this).parent().prev().text()
+                    {#alert($edit_class_name)#}
+                    $('#myModal1 #classnameInput').val($edit_class_name)
+                })
+
+            </script>
+
+        </div>
+    </div>
+    </div>
+    {#    面板结束#}
+
+
+
+{% endblock content %}
+
+{#侧边栏#}
+{% block sidebar %}
+    9
+{% endblock sidebar %}

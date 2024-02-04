@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker-standalone.min.css"
+          rel="stylesheet">
+    <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment-with-locales.min.js"></script>
+    <div class="panel panel-info">
+        <div class="panel-heading">请假/申请/问题/批复/回应</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="/leave/" method="post" onsubmit="return validateForm()">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="datetimepicker1" class="col-sm-2 control-label">选择日期：</label>
+                    <!--指定 date标记-->
+                    <div class='input-group col-sm-8 date ' id='datetimepicker1'>
+             <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar" style="color: red!important;"></span>
+            </span>
+                        <input type='text' class="form-control" name="starttime"/>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="datetimepicker2" class="col-sm-2 control-label">结束时间：</label>
+                    <!--指定 date标记-->
+                    <div class='input-group date col-sm-8' id='datetimepicker2'>
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar" style="color: red!important;"></span>
+            </span>
+                        <input type='text' class="form-control" name="endtime"/>
+
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <label for="inputContent" class="col-sm-2 control-label">原因事由:
+                        <h5>------------------</h5>
+                        批复回应:
+                        <br>
+                        <br>
+                        <br>
+                        <button type="submit" class="btn btn-success">提交</button>
+                    </label>
+                    <div class="col-sm-8">
+                        <textarea rows="10" name="explain" class="form-control" id="inputContent"
+                                  placeholder="↑如果不是请假请保持默认时间，请假请选择正确的时间"></textarea>
+                    </div>
+                </div>
+                {#    <div class="form-group">#}
+                {#        <div class="col-sm-offset-2 col-sm-8">#}
+                {#            <button type="submit" class="btn btn-success">提交</button>#}
+                {#        </div>#}
+                {#    </div>#}
+            </form>
+
+            <script>
+                $(document).ready(function () {
+                    // 获取当前日期
+                    var today = moment().format('YYYY-MM-DD');
+                    var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');
+
+
+                    // 设置开始时间和结束时间的默认值为当天日期
+                    $('input[name="starttime"]').val(yesterday);
+                    $('input[name="endtime"]').val(today);
+
+                    // 其他代码...
+                });
+
+                function validateForm() {
+                    var startTime = document.getElementsByName("starttime")[0].value;
+                    var endTime = document.getElementsByName("endtime")[0].value;
+                    var content = document.getElementById("inputContent").value;
+
+                    if (startTime.trim() === '' || endTime.trim() === '') {
+                        alert("请选择时间");
+                        return false;
+                    }
+
+                    if (content.trim() === '') {
+                        alert("请填写事由");
+                        return false;
+                    }
+
+                    return true;
+                }
+            </script>
+
+
+        </div>
+
+    </div>
+    <script>
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: 'YYYY-MM-DD',
+                locale: moment.locale('zh-cn')
+            });
+            $('#datetimepicker2').datetimepicker({
+                format: 'YYYY-MM-DD',
+                locale: moment.locale('zh-cn')
+            });
+        })
+    </script>
+
+
+    <div class="panel panel-info">
+        <div class="panel-heading">请假/申请/问题/批复/回应 记录</div>
+        <div class="panel-body">
+            <div id="pagination">
+                {% for item in leave_list reversed %}
+                    <div class="alert {% if '不同意' in item.explain %}alert-danger{% elif '同意' in item.explain %}alert-success{% else %}alert-info{% endif %}"
+                         role="alert">
+                        用户: {{ item.user.username }} <br> 时间: {{ item.start_time }}---{{ item.end_time }} <br> 原因/回应:
+                        <pre style="background-color: gray!important;"><code
+                                class="python">{{ item.explain }}</code></pre>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>
+        var items = document.querySelectorAll('#pagination .alert');
+        var itemsPerPage = 10;
+        var currentPage = 1;
+
+        function showPage(pageNumber) {
+            var startIndex = (pageNumber - 1) * itemsPerPage;
+            var endIndex = startIndex + itemsPerPage;
+
+            for (var i = 0; i < items.length; i++) {
+                if (i >= startIndex && i < endIndex) {
+                    items[i].style.display = 'block';
+                } else {
+                    items[i].style.display = 'none';
+                }
+            }
+        }
+
+        function createPagination() {
+            var totalPages = Math.ceil(items.length / itemsPerPage);
+
+            var pagination = document.createElement('ul');
+            pagination.classList.add('pagination');
+
+            for (var i = 1; i <= totalPages; i++) {
+                var pageItem = document.createElement('li');
+                var pageLink = document.createElement('a');
+                pageLink.href = '#';
+                pageLink.innerText = i;
+                pageLink.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    currentPage = parseInt(this.innerText);
+                    showPage(currentPage);
+                });
+
+                pageItem.appendChild(pageLink);
+                pagination.appendChild(pageItem);
+            }
+
+            document.getElementById('pagination').appendChild(pagination);
+        }
+
+        showPage(currentPage);
+        createPagination();
+    </script>
+
+
+
+
+{% endblock content %}
+{% block sidebar %}
+    6
+{% endblock sidebar %}

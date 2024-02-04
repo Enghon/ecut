@@ -1,0 +1,12 @@
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      134950/sshd: /usr/s 
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      135026/systemd-reso 
+tcp        0      0 0.0.0.0:8888            0.0.0.0:*               LISTEN      158286/python3      
+tcp        0      0 172.27.1.62:53950       100.100.45.186:80       TIME_WAIT   -                   
+tcp        0      0 172.27.1.62:22          182.106.114.17:6994     ESTABLISHED 181037/sshd: root@n 
+tcp        0      0 172.27.1.62:41646       100.100.30.26:80        ESTABLISHED 1066/AliYunDun      
+tcp        0      0 172.27.1.62:40222       100.100.45.106:80       TIME_WAIT   -                   
+tcp        0   1116 172.27.1.62:22          182.106.114.17:7367     ESTABLISHED 180379/sshd: root@p 
+tcp        0   1420 172.27.1.62:22          182.106.114.17:5315     ESTABLISHED 162709/sshd: root@p 
+tcp        0      0 172.27.1.62:8888        106.224.158.53:35460    ESTABLISHED 158286/python3      

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    {#巨幕开始#}
+    <div class="jumbotron">
+        <div>
+<iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=2&num=5" width="650" height="70" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+</div>
+
+
+
+    </div>
+    
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+        
+            <h3 class="panel-title">签到记录</h3>
+
+        </div>
+
+
+        <div class="panel-body" >
+            <div class="row">
+                <button class="btn btn-success btn-lg  col-md-offset-10" id="sign_btn">
+
+
+                    {% if sign_flag == True %}
+                        签到
+                    {% else %}
+                        签退
+                    {% endif %}
+
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>学号</th>
+                        <th>姓名</th>
+                        <th>签到时间</th>
+                        <th>签退时间</th>
+                        <th>时长</th>
+                    </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                    {% for att in att_list %}
+                        <tr>
+                            <td>{{ att.stu.studentNum }}</td>
+                            <td>{{ att.stu.username }}</td>
+                            <td>{{ att.start_time }}</td>
+                            <td>{{ att.end_time }}</td>
+                            {#                {% ifequal att.end_time None %}#}
+                            {#                <td></td>#}
+                            {#                {% else %}#}
+                            {#                <td>{{ att.start_time | timesince:att.end_time }}</td>#}
+                            {#                {% endifequal %}#}
+
+                            {% if att.end_time == None %}
+                                <td></td>
+                            {% else %}
+                                <td>{{ att.start_time | timesince:att.end_time }}</td>
+                            {% endif %}
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="paginationContainer"></div>
+
+            <script>
+                var tableRows = Array.from(document.querySelectorAll('#attendanceTableBody tr'));
+                var itemsPerPage = 10;
+                var currentPage = 1;
+
+                function showPage(page) {
+                    var startIndex = (page - 1) * itemsPerPage;
+                    var endIndex = startIndex + itemsPerPage;
+
+                    for (var i = 0; i < tableRows.length; i++) {
+                        if (i >= startIndex && i < endIndex) {
+                            tableRows[i].style.display = 'table-row';
+                        } else {
+                            tableRows[i].style.display = 'none';
+                        }
+                    }
+                }
+
+                function createPagination() {
+                    var totalPages = Math.ceil(tableRows.length / itemsPerPage);
+
+                    var paginationContainer = document.getElementById('paginationContainer');
+                    paginationContainer.innerHTML = '';
+
+                    for (var i = 1; i <= totalPages; i++) {
+                        var pageLink = document.createElement('a');
+                        pageLink.href = 'javascript:void(0)';
+                        pageLink.textContent = i;
+                        pageLink.addEventListener('click', function () {
+                            currentPage = parseInt(this.textContent);
+                            showPage(currentPage);
+                        });
+
+                        paginationContainer.appendChild(pageLink);
+                    }
+                }
+
+                showPage(currentPage);
+                createPagination();
+            </script>
+
+            <style>
+                #paginationContainer a {
+                    margin-right: 5px;
+                    text-decoration: underline;
+                    cursor: pointer;
+                }
+            </style>
+
+
+        </div>
+    </div>
+    {#面板结束#}
+    <script>
+        $('.panel-body').on('click', '#sign_btn', function () {
+            $.post('/check/', {'sign': "{{ sign_flag }}"}, function (ret) {
+                window.location.reload(true)
+                alert('操作成功')
+            })
+
+        })
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+        });
+    </script>
+
+
+
+
+
+
+
+
+{% endblock content %}
+{% block sidebar %}
+    0
+{% endblock sidebar %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">考核评定记录  总分{{ total_point }}</div>
+        <div class="panel-body">
+            {% if user_list %}
+{#                 {% for item in user_list %}#}
+{#                     <td>{{ item.point }}</td>#}
+{#                {% endfor %}#}
+
+                {% for grade in grades %}
+                    <h3 style="color: {{ grade.color }}">{{ grade.name }}</h3>
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>姓名</th>
+                            <th>学号</th>
+                            <th>考核名称</th>
+                            <th>成绩</th>
+                            <th>评语</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item,tr in user_list_with_ratio %}
+
+                                {% if tr >= grade.min_point and tr < grade.max_point %}
+                                    <tr>
+                                        <td>{{ item.user.username }}</td>
+                                        <td>{{ item.user.studentNum }}</td>
+                                        <td>{{ item.content.title }}</td>
+                                        <td>{{ item.point }}</td>
+                                        <td>{{ item.detail }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+
+
+                        </tbody>
+                    </table>
+                {% endfor %}
+
+
+            {% else %}
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>考核名称</th>
+                            <th>日期</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in exam_list %}
+                            <tr>
+                                <td><a href="/exam/?exam_id={{ item.id }}">{{ item.title }}</a></td>
+                                <td>{{ item.date }}</td>
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+{% block sidebar %}
+    4
+{% endblock sidebar %}

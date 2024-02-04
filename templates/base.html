@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)https://v3.bootcss.com/examples/dashboard/ -->
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="https://v3.bootcss.com/favicon.ico">-->
+
+    <title>班级协作平台</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Custom styles for this template -->
+    <link href="/static/css/manage.css" rel="stylesheet">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <style>
+
+
+.sidebar {
+  background-color: #333;
+  width: 250px;
+  padding: 20px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  color: #ffcc00;
+  font-weight: bold;
+
+}
+
+
+        /* 网页整体变灰的样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 网页内容变灰的样式 */
+        .grayscale {
+            filter: grayscale(100%);
+        }
+
+        /* 弹窗样式 */
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div>
+                  <a class="navbar-brand" href="#" style="color: white">班级协作平台
+                <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=11" width="500" height="25" frameborder="0" style="margin-left: 480px;background-color: white"></iframe>
+            </a>
+            </div>
+
+
+
+
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" onclick="showConfirmationModal(event)" class="glyphicon glyphicon-off"> 退出登录</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="confirmationModal" class="modal-overlay" style="display: none; ">
+            <div class="modal-content" style="background-color: lightyellow!important;">
+                <h3>{{ user.username }}</h3>
+                <p>确定要退出登录吗？</p>
+                <a class="a1">还有</a>
+                <a id="countdown" class="a1">10</a>
+                <a class="a1">秒自动注销</a>
+                <br>
+                <button onclick="logout()">确认</button>
+                <button onclick="hideConfirmationModal()">取消</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+        <script>
+            var countdownInterval;
+
+            function showConfirmationModal(event) {
+                event.preventDefault(); // 阻止默认的链接跳转行为
+
+                var confirmationModal = document.getElementById("confirmationModal");
+                confirmationModal.style.display = "flex";
+
+                var countdownElement = document.getElementById("countdown");
+                var countdown = 10; // 倒计时时间（秒）
+
+                countdownInterval = setInterval(function () {
+                    countdown--;
+                    countdownElement.innerText = countdown;
+
+                    if (countdown === 0) {
+                        clearInterval(countdownInterval);
+                        logout();
+                    }
+                }, 1000);
+
+                // 将网页内容变灰
+                var bodyElement = document.body;
+                bodyElement.classList.add("grayscale");
+            }
+
+            function hideConfirmationModal() {
+                clearInterval(countdownInterval);
+
+                var confirmationModal = document.getElementById("confirmationModal");
+                confirmationModal.style.display = "none";
+
+                // 移除网页内容的灰色效果
+                var bodyElement = document.body;
+                bodyElement.classList.remove("grayscale");
+            }
+
+            function logout() {
+                window.location.href = "/logout/"; // 执行注销操作
+            }
+        </script>
+
+<div class="container-fluid"  >
+    <div class="row">
+        <div class="sidebar "  >
+            <ul class="nav nav-sidebar ">
+                <li><a href="/check/" class="glyphicon glyphicon-check"> 签到</a></li>
+                <li><a href="/total/" class="glyphicon glyphicon-list-alt"> 考勤分析统计 <span class="sr-only"> 统计</span></a></li>
+                <li><a href="/notice/" class="glyphicon glyphicon-bullhorn"> 通知栏</a></li>
+                <li><a href="/noticeManage/" class="glyphicon glyphicon-bell"> 通知管理</a></li>
+                <li><a href="/exam/" class="glyphicon glyphicon-duplicate"> 考核评定记录</a></li>
+                <li><a href="/exam_manage/" class="glyphicon glyphicon-pencil"> 考核管理</a></li>
+                <li><a href="/leave/" class="glyphicon glyphicon-book"> 事项</a></li>
+                <li><a href="/classManage/" class="glyphicon glyphicon-list-alt"> 班级管理</a></li>
+                <li><a href="/memberManage/" class="glyphicon glyphicon-user"> 成员管理</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $('.nav-sidebar li').siblings().removeClass('active')
+    $('.nav-sidebar li').eq({% block sidebar %}{% endblock  %}).addClass('active')
+</script>
+</body>
+</html>
+
+
+

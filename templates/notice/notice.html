@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+@keyframes jumping {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+.jumping-text {
+  animation: jumping 1s infinite;
+}
+
+@keyframes rotating {
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}
+
+.rotating-text {
+  display: inline-block;
+  animation: rotating 5s infinite;
+}
+
+
+</style>
+    <div class="panel panel-info">
+        <div class="panel-heading">系统公告</div>
+        <div class="panel-body">
+
+            {% for item in info_list %}
+                <big>{{ item.post_date }}     </big>
+<h5  style="color: #0ea0db;">{{ item.head }}</h5>
+
+                <div class="alert {% if item.level == 0 %}
+                    alert-success
+                    {% endif %}
+                {% if item.level == 1 %}
+                alert-info
+                {% endif %}
+                {% if item.level == 2 %}
+                alert-warning
+                {% endif %}
+                {% if item.level == 3 %}
+                    alert-danger
+                {% endif %}
+                " role="alert">
+                    <div class="caption">
+
+
+                            <p>{{ item.content }}</p>
+                            <footer class="pull-right jumping-text rotating-text" ><cite style="margin-bottom: 10px">来自{{ item.author.username}}的消息</cite>
+
+                            </footer>
+
+                    </div>
+
+                </div>
+<h6>---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br></h6>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endblock content %}
+{% block sidebar %}
+    2
+{% endblock sidebar %}

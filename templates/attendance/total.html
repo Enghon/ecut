@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+    <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts-en.common.min.js"></script>
+    <div class="row">
+        <div class="col-md-12" id="mainchart" style="height:400px ">
+        </div>
+
+    </div>
+
+    <!--面板开始-->
+    <div class="panel panel-primary" >
+        <div class="panel-heading" style="text-align: center;">数据统计</div>
+        <div class="panel-body">
+
+
+            <!--数据表开始-->
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search">
+                        <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="search()">搜索</button>
+            </span>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function search() {
+                    var input = document.getElementById("searchInput").value.toLowerCase();
+                    var rows = document.getElementById("time_detail").rows;
+
+                    for (var i = 0; i < rows.length; i++) {
+                        var studentNumber = rows[i].cells[1].textContent.toLowerCase();
+                        var studentName = rows[i].cells[2].textContent.toLowerCase();
+
+                        if (studentNumber.includes(input) || studentName.includes(input)) {
+                            rows[i].style.display = "table-row";
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                }
+            </script>
+            <hr>
+
+            <div class="table-responsive" >
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>学号</th>
+                        <th>姓名</th>
+                        <th>班级</th>
+                        <th>总时长（h）</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="time_detail">
+                    {% for info in info_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ info.stu }}</td>
+                            <td>{{ info.stu__username }}</td>
+                            <td>{{ info.stu__cid__name }}</td>
+                            <td>{{ info.total_time|floatformat:'1' }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="pagination"></div>
+
+            <script>
+                // 获取数据行数
+                var rowCount = document.getElementById("time_detail").rows.length;
+
+                // 每页显示的数据条数
+                var itemsPerPage = 10;
+
+                // 计算总页数
+                var totalPages = Math.ceil(rowCount / itemsPerPage);
+
+                // 创建分页链接
+                var pagination = document.getElementById("pagination");
+                for (var i = 1; i <= totalPages; i++) {
+                    var link = document.createElement("a");
+                    link.href = "javascript:void(0);";
+                    link.innerHTML = i;
+                    link.setAttribute("data-page", i);
+                    link.addEventListener("click", function () {
+                        var page = parseInt(this.getAttribute("data-page"));
+                        showPage(page);
+                    });
+                    pagination.appendChild(link);
+                }
+
+                // 默认显示第一页
+                showPage(1);
+
+                // 显示指定页的数据
+                function showPage(page) {
+                    var startIndex = (page - 1) * itemsPerPage;
+                    var endIndex = startIndex + itemsPerPage;
+
+                    var rows = document.getElementById("time_detail").rows;
+                    for (var i = 0; i < rows.length; i++) {
+                        if (i >= startIndex && i < endIndex) {
+                            rows[i].style.display = "table-row";
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                }
+            </script>
+
+
+            <!--数据表结束-->
+            <script>
+                $(document).ready(function () {
+                    {#数据展示#}
+                    (function () {
+                        $.post('/total/', {"flag": "ok"}, function (ret) {
+                            data = $.parseJSON(ret)
+                            console.log(data)
+                            $('#time_detail').empty()
+                            {#姓名数组#}
+                            var names = [];
+                            {#时间数组#}
+                            var times = [];
+                            for (var i = 0; i < data.length; i++) {
+                                s = "<tr><td>" + i + "</td><td>" + data[i].stu + "</td><td>" + data[i].stu__username + "</td><td>" +
+                                    data[i].stu__cid__name + "</td><td>" +
+                                    data[i].total_time + "</td><td>" +
+                                    "</td></tr>";
+                                $('#time_detail').append(s)
+                                names.push(data[i].stu__username)
+                                times.push(data[i].total_time)
+
+                            }
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('mainchart'));
+
+                            // 指定图表的配置项和数据
+                            var option = {
+                                title: {
+                                    text: '签到时长树状图'
+                                },
+                                tooltip: {},
+                                legend: {
+                                    data: ['签到统计']
+                                },
+                                xAxis: {
+                                    data: names
+                                },
+                                yAxis: {},
+                                series: [{
+                                    name: '时间',
+                                    type: 'bar',
+                                    data: times,
+                                    itemStyle: {
+                                        color: 'skyblue'
+                                    }
+                                }]
+                            };
+
+
+                            // 使用刚指定的配置项和数据显示图表。
+                            myChart.setOption(option);
+
+                        })
+                    })()
+                })
+                $.ajaxSetup({
+                    data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+                });
+            </script>
+            <!--面板底部开始-->
+
+        </div>
+    </div>
+{% endblock content %}
+
+{% block sidebar %}
+    1
+{% endblock sidebar %}
