@@ -286,10 +286,10 @@ def exam(request):
 
         user_list_with_ratio = list(zip(user_list, ratio_list))
     grades = [
-        {"name": "优秀(90%-100%)", "color": "#008000", "min_point": 0.8999, "max_point": 1.01},
-        {"name": "良好(80%-89%)", "color": "#FFA500", "min_point": 0.7999, "max_point": 0.8999},
-        {"name": "及格(60%-79%)", "color": "#FFC125", "min_point": 0.6999, "max_point": 0.7999},
-        {"name": "不及格(0-59%)", "color": "#FF0000", "min_point": 0.00001, "max_point": 0.5999}
+        {"name": "优秀(90%-100%)", "color": "#008000", "min_point": 0.8999999999, "max_point": 1.01},
+        {"name": "良好(80%-89%)", "color": "#FFA500", "min_point": 0.79999999999, "max_point": 0.89999999999},
+        {"name": "及格(60%-79%)", "color": "#FFC125", "min_point": 0.59999999999, "max_point": 0.79999999999},
+        {"name": "不及格(0-59%)", "color": "#FF0000", "min_point": 0.00001, "max_point": 0.5999999999}
     ]
     return render(request, 'exam/exam.html', locals())
 
