@@ -18,11 +18,57 @@
 
         </div>
 
+        <script>
+            function searchTable() {
+                // 获取输入框的值
+                var input = document.getElementById("searchInput");
+                var filter = input.value.toUpperCase();
+
+                // 获取表格的每一行
+                var table = document.getElementById("attendanceTableBody");
+                var tr = table.getElementsByTagName("tr");
+
+                // 遍历每一行，如果匹配搜索条件，则显示，否则隐藏
+                for (var i = 0; i < tr.length; i++) {
+                    var td = tr[i].getElementsByTagName("td");
+                    var found = false; // 用于标记是否找到匹配项
+                    for (var j = 0; j < td.length; j++) {
+                        if (td[j]) {
+                            var txtValue = td[j].textContent || td[j].innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                found = true;
+                                break; // 只要找到匹配项就不需要继续检查当前行的其他单元格
+                            }
+                        }
+                    }
+                    // 根据 found 的值显示或隐藏行
+                    if (found) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        </script>
+        {% if user.user_type.caption == 'admin' %}
+            <!-- Search form -->
+            <form id="searchForm">
+
+
+                <div class="search-container">
+                    <input type="text" id="searchInput" oninput="searchTable()" placeholder="搜索姓名或学号...">
+                </div>
+            </form>
+        {% endif %}
+
+        <!-- Table to display attendance records -->
+
 
         <div class="panel-body">
-            <div class="row"  >
+            <div class="row">
                 <!-- 添加确认取消弹窗 -->
-                <button class="btn btn-success btn-lg col-md-offset-10" id="sign_btn" onclick="confirmSign()" style="margin-left: 10px">
+                <button class="btn btn-success btn-lg col-md-offset-10" id="sign_btn" onclick="confirmSign()"
+                        style="margin-left: 10px">
                     {% if sign_flag == True %}
                         签到
                     {% else %}
