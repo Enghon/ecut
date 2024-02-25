@@ -37,8 +37,11 @@ def is_login(func):
 # 函数返回False，否则返回True。
 def check_login(email, password):
     select_user = UserInfo.objects.filter(email=email).filter(password=password)
+
     if len(select_user) == 0:
         return False
+    # elif len(select_username) == 0:
+    #     return False
     else:
         return True
 

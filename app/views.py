@@ -13,6 +13,9 @@ import datetime
 import pytz
 
 
+
+
+
 def introduction(request):
     return render(request,'introduction.html')
 

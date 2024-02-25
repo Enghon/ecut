@@ -4,33 +4,46 @@
     {#巨幕开始#}
     <div class="jumbotron">
         <div>
-<iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=2&num=5" width="650" height="70" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
-</div>
-
+            <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=2&num=5" width="650" height="70"
+                    frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+        </div>
 
 
     </div>
-    
+
     <div class="panel panel-primary">
         <div class="panel-heading">
-        
+
             <h3 class="panel-title">签到记录</h3>
 
         </div>
 
 
-        <div class="panel-body" >
-            <div class="row">
-                <button class="btn btn-success btn-lg  col-md-offset-10" id="sign_btn">
-
-
+        <div class="panel-body">
+            <div class="row"  >
+                <!-- 添加确认取消弹窗 -->
+                <button class="btn btn-success btn-lg col-md-offset-10" id="sign_btn" onclick="confirmSign()" style="margin-left: 10px">
                     {% if sign_flag == True %}
                         签到
                     {% else %}
                         签退
                     {% endif %}
-
                 </button>
+
+                <script>
+                    function confirmSign() {
+                        var signType = "{% if sign_flag == True %}签到{% else %}签退{% endif %}";
+                        var message = "确定要进行" + signType + "吗？";
+                        if (confirm(message)) {
+
+
+                        } else {
+                            // 如果用户点击了取消，则不执行任何操作
+                            // 可以根据需要添加额外的处理逻辑
+                        }
+                    }
+                </script>
+
             </div>
 
             <div class="table-responsive">

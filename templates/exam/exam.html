@@ -1,63 +1,144 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="panel panel-primary">
+
+    <div class="panel panel-primary" style="margin-top: 10px">
+
         <div class="panel-heading">考核评定记录  总分{{ total_point }}</div>
+
         <div class="panel-body">
+
             {% if user_list %}
 {#                 {% for item in user_list %}#}
 {#                     <td>{{ item.point }}</td>#}
 {#                {% endfor %}#}
-
+<button onclick="downloadGradeReport()">下载成绩单</button>
                 {% for grade in grades %}
-                    <h3 style="color: {{ grade.color }}">{{ grade.name }}</h3>
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>姓名</th>
-                            <th>学号</th>
-                            <th>考核名称</th>
-                            <th>成绩</th>
-                            <th>评语</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for item,tr in user_list_with_ratio %}
+    <h3 style="color: {{ grade.color }}">{{ grade.name }}</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>姓名</th>
+                <th>学号</th>
+                <th>考核名称</th>
+                <th>成绩</th>
+                <th>评语</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item,tr in user_list_with_ratio %}
+                {% if tr >= grade.min_point and tr < grade.max_point %}
+                    <tr>
+                        <td>{{ item.user.username }}</td>
+                        <td>{{ item.user.studentNum }}</td>
+                        <td>{{ item.content.title }}</td>
+                        <td>{{ item.point }}</td>
+                        <td>{{ item.detail }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
 
-                                {% if tr >= grade.min_point and tr < grade.max_point %}
-                                    <tr>
-                                        <td>{{ item.user.username }}</td>
-                                        <td>{{ item.user.studentNum }}</td>
-                                        <td>{{ item.content.title }}</td>
-                                        <td>{{ item.point }}</td>
-                                        <td>{{ item.detail }}</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
+<!-- Add download button -->
 
 
-                        </tbody>
-                    </table>
-                {% endfor %}
+<script>
+    function downloadGradeReport() {
+        // Get the table content
+        var table = document.getElementsByTagName("table")[0];
+        var rows = table.rows;
+
+        // Prepare CSV content
+        var csvContent = "\uFEFF"; // Add BOM (Byte Order Mark)
+        for (var i = 0; i < rows.length; i++) {
+            var cells = rows[i].cells;
+            var rowData = [];
+            for (var j = 0; j < cells.length; j++) {
+                rowData.push('"' + cells[j].innerText.replace(/"/g, '""') + '"'); // Quote each cell and escape quotes
+            }
+            csvContent += rowData.join(",") + "\n";
+        }
+
+        // Create a link element and trigger the download
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", "data:text/csv;charset=utf-8," + encodedUri);
+        link.setAttribute("download", "grade_report.csv");
+        document.body.appendChild(link);
+        link.click();
+    }
+</script>
+
 
 
             {% else %}
-                <table class="table table-bordered">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>考核名称</th>
-                            <th>日期</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in exam_list %}
-                            <tr>
-                                <td><a href="/exam/?exam_id={{ item.id }}">{{ item.title }}</a></td>
-                                <td>{{ item.date }}</td>
+              <style>
+    /* 样式化搜索框 */
+    #searchInput {
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        width: 300px; /* 设置搜索框宽度 */
+        font-size: 16px;
+        background-color: #f8f8f8;
 
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        background-position: 10px 10px; /* 设置搜索图标位置 */
+        background-repeat: no-repeat;
+        padding-left: 40px; /* 留出空间给搜索图标 */
+        outline: none; /* 去除默认的外边框 */
+    }
+
+    /* 设置搜索框获得焦点时的样式 */
+    #searchInput:focus {
+        border-color: #5b9dd9;
+        box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<input type="text" id="searchInput" onkeyup="searchTable()" placeholder="在此输入搜索考核的名称...">
+
+<table class="table table-bordered" id="examTable">
+    <thead class="thead-dark">
+        <tr>
+            <th>考核名称</th>
+            <th>日期</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in exam_list %}
+            <tr>
+                <td><a href="/exam/?exam_id={{ item.id }}">{{ item.title }}</a></td>
+                <td>{{ item.date }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("examTable");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0]; // Change index to match the column you want to search
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+</script>
+
             {% endif %}
         </div>
     </div>

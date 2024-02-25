@@ -7,7 +7,8 @@
     {#面板开始#}
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title">班级管理</h3>
+            <h3 class="panel-title">班级管理      <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="搜索班级..."></h3>
+
         </div>
 
         <!-- 添加模态框（Modal） -->
@@ -25,6 +26,7 @@
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <h3 class="panel-title">添加班级</h3>
+
                             </div>
                             <div class="panel-body">
                                 <div class="form-group">
@@ -137,39 +139,94 @@
                 <button class="btn btn-success   col-lg-1" data-toggle="modal"
                         data-target="#myModal" id="add_btn">添加
                 </button>
+
             </a>
 
             <hr>
 
+<style>
+    /* 样式化搜索框 */
+    #searchInput {
+        text-align: center;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        width: 200px; /* 设置搜索框宽度 */
+        height: 30px;
+        color: red;
+        font-size: 16px;
+        background-color: #f8f8f8;
+        {#background-image: url('searchicon.png'); /* 可选，添加搜索图标 */#}
+        background-position: 10px 10px; /* 设置搜索图标位置 */
+        background-repeat: no-repeat;
+        {#padding-left: 40px; /* 留出空间给搜索图标 */#}
+        outline: none; /* 去除默认的外边框 */
+    }
 
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Class_id</th>
-                        <th>班级</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody id="classTableBody">
-                    {% for class in class_list %}
-                        <tr class="classRow">
-                            <td>{{ class.id }}</td>
-                            <td>{{ class.name }}</td>
-                            <td>
-                                <span class="hidden">{{ class.id }}</span>
-                                <button class="btn btn-info" id="edit_btn" data-toggle="modal" data-target="#myModal1">
-                                    编辑
-                                </button>
-                                <a href="/delete_class?delete_id={{ class.id }}">
-                                    <button class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    /* 设置搜索框获得焦点时的样式 */
+    #searchInput:focus {
+        border-color: #5b9dd9;
+        box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+
+
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Class_id</th>
+                <th>班级</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="classTableBody">
+            {% for class in class_list %}
+                <tr class="classRow">
+                    <td>{{ class.id }}</td>
+                    <td>{{ class.name }}</td>
+                    <td>
+                        <span class="hidden">{{ class.id }}</span>
+                        <button class="btn btn-info edit_btn" data-toggle="modal" data-target="#myModal1">
+                            编辑
+                        </button>
+                        <a href="/delete_class?delete_id={{ class.id }}">
+                            <button class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function searchTable() {
+    // 声明变量
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.querySelector(".table-striped");
+    tr = table.getElementsByTagName("tr");
+
+    // 循环表格每一行，查找匹配项
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0]; // Change index to match the column you want to search
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = ""; // 显示匹配项
+            } else {
+                tr[i].style.display = "none"; // 隐藏不匹配项
+            }
+        }
+    }
+}
+</script>
 
             <div id="paginationContainer"></div>
 
