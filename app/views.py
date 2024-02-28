@@ -118,24 +118,46 @@ def total(request):
     (flag, user) = check_cookie(request)
     (flag, rank) = check_cookie(request)
     user = rank
-    if request.method == 'POST':
-        nowdate = datetime.datetime.now()#    a. 获取当前日期和星期几。
-        weekDay = datetime.datetime.weekday(nowdate)
-        firstDay = nowdate - datetime.timedelta(days=weekDay)
-        lastDay = nowdate + datetime.timedelta(days=6 - weekDay)
-        info_list = Attendence.objects.filter(date__gte=firstDay, date__lte=lastDay,stu__cid=user.cid).values( \
-            'stu', 'stu__username', 'stu__cid__name', ).annotate(total_time=Sum('duration')).order_by()
-        info_list = json.dumps(list(info_list), cls=DecimalEncoder)
-        return HttpResponse(info_list)
+    if rank.user_type.caption == 'admin':
+        if request.method == 'POST':
+            nowdate = datetime.datetime.now()#    a. 获取当前日期和星期几。
+            weekDay = datetime.datetime.weekday(nowdate)
+            firstDay = nowdate - datetime.timedelta(days=weekDay)
+            lastDay = nowdate + datetime.timedelta(days=6 - weekDay)
+            info_list = Attendence.objects.filter(date__gte=firstDay, date__lte=lastDay,stu__cid=user.cid).values( \
+                'stu', 'stu__username', 'stu__cid__name', ).annotate(total_time=Sum('duration')).order_by()
+            info_list = json.dumps(list(info_list), cls=DecimalEncoder)
+            return HttpResponse(info_list)
+        else:
+            nowdate = datetime.datetime.now()
+            weekDay = datetime.datetime.weekday(nowdate)
+            firstDay = nowdate - datetime.timedelta(days=weekDay)
+            lastDay = nowdate + datetime.timedelta(days=6 - weekDay)
+            info_list = Attendence.objects.filter(date__gte=firstDay, date__lte=lastDay,stu__cid=user.cid).values('stu', 'stu__username',
+                                                                                          'stu__cid__name').annotate(
+                total_time=Sum('duration')).order_by()
+            return render(request, 'attendance/total.html', locals())
     else:
-        nowdate = datetime.datetime.now()
-        weekDay = datetime.datetime.weekday(nowdate)
-        firstDay = nowdate - datetime.timedelta(days=weekDay)
-        lastDay = nowdate + datetime.timedelta(days=6 - weekDay)
-        info_list = Attendence.objects.filter(date__gte=firstDay, date__lte=lastDay,stu__cid=user.cid).values('stu', 'stu__username',
-                                                                                      'stu__cid__name').annotate(
-            total_time=Sum('duration')).order_by()
-        return render(request, 'attendance/total.html', locals())
+        return render(request, 'class/class_manage_denied.html')
+    #
+    # if request.method == 'POST':
+    #     nowdate = datetime.datetime.now()#    a. 获取当前日期和星期几。
+    #     weekDay = datetime.datetime.weekday(nowdate)
+    #     firstDay = nowdate - datetime.timedelta(days=weekDay)
+    #     lastDay = nowdate + datetime.timedelta(days=6 - weekDay)
+    #     info_list = Attendence.objects.filter(date__gte=firstDay, date__lte=lastDay,stu__cid=user.cid).values( \
+    #         'stu', 'stu__username', 'stu__cid__name', ).annotate(total_time=Sum('duration')).order_by()
+    #     info_list = json.dumps(list(info_list), cls=DecimalEncoder)
+    #     return HttpResponse(info_list)
+    # else:
+    #     nowdate = datetime.datetime.now()
+    #     weekDay = datetime.datetime.weekday(nowdate)
+    #     firstDay = nowdate - datetime.timedelta(days=weekDay)
+    #     lastDay = nowdate + datetime.timedelta(days=6 - weekDay)
+    #     info_list = Attendence.objects.filter(date__gte=firstDay, date__lte=lastDay,stu__cid=user.cid).values('stu', 'stu__username',
+    #                                                                                   'stu__cid__name').annotate(
+    #         total_time=Sum('duration')).order_by()
+    #     return render(request, 'attendance/total.html', locals())
 
 
 
@@ -282,17 +304,18 @@ def exam(request):
     exam_list = ExamContent.objects.all()
     exam_id = request.GET.get('exam_id')
     if exam_id:
-        # user_list = Exam.objects.filter(content_id=exam_id, user__cid=user.cid).all()
+
         user_list = Exam.objects.filter(content_id=exam_id).all()
         total_point = max(item.point for item in user_list)
         ratio_list = [item.point / total_point for item in user_list]
+        total_point1 = max(item.point for item in user_list)-1
 
         user_list_with_ratio = list(zip(user_list, ratio_list))
     grades = [
-        {"name": "优秀(90%-100%)", "color": "#008000", "min_point": 0.8999999999, "max_point": 1.01},
-        {"name": "良好(80%-89%)", "color": "#FFA500", "min_point": 0.79999999999, "max_point": 0.89999999999},
-        {"name": "及格(60%-79%)", "color": "#FFC125", "min_point": 0.59999999999, "max_point": 0.79999999999},
-        {"name": "不及格(0-59%)", "color": "#FF0000", "min_point": 0.00001, "max_point": 0.5999999999}
+        {"name": "优秀(90%-100%)", "color": "#008000", "min_point": 0.89, "max_point": 1.0},
+        {"name": "良好(80%-89%)", "color": "#FFA500", "min_point": 0.79, "max_point": 0.89},
+        {"name": "及格(60%-79%)", "color": "#FFC125", "min_point": 0.59, "max_point": 0.79},
+        {"name": "不及格(0-59%)", "color": "#FF0000", "min_point": 0.00, "max_point": 0.59}
     ]
     return render(request, 'exam/exam.html', locals())
 
