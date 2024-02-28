@@ -138,7 +138,7 @@ def total(request):
                 total_time=Sum('duration')).order_by()
             return render(request, 'attendance/total.html', locals())
     else:
-        return render(request, 'class/class_manage_denied.html')
+        return render(request, 'denied.html')
     #
     # if request.method == 'POST':
     #     nowdate = datetime.datetime.now()#    a. 获取当前日期和星期几。
@@ -195,7 +195,7 @@ def classManage(request):
 
             return render(request, 'class/classManage.html', {'class_list': class_list})
         else:
-            return render(request, 'class/class_manage_denied.html')
+            return render(request, 'denied.html')
     else:
         return render(request, 'account/page-login.html', {'error_msg': ''})
 
@@ -219,7 +219,7 @@ def edit_class(request):
             return render(request, 'class/classManage.html', {'class_list': class_list})
             # return HttpResponse('编辑班级')
         else:
-            return render(request, 'class/class_manage_denied.html')
+            return render(request, 'denied.html')
     else:
         return render(request, 'account/page-login.html', {'error_msg': ''})
 
@@ -249,7 +249,7 @@ def delete_class(request):
             ClassInfo.objects.filter(id=delete_id).delete()
             return redirect('/classManage/')
         else:
-            return render(request, 'class/class_manage_denied.html')
+            return render(request, 'denied.html')
     else:
         return render(request, 'account/page-login.html', {'error_msg': ''})
 
@@ -278,7 +278,7 @@ def noticeManage(request):
         else:
             return render(request, 'notice/notice_manage.html')
     else:
-        return render(request, 'notice/notice_manage_denied.html')
+        return render(request, 'denied.html')
 
                                                     #事项
 @is_login
@@ -344,7 +344,7 @@ def exam_manage(request):
         user_list = UserInfo.objects.filter(cid=user.cid).order_by('studentNum')
         return render(request, 'exam/exam_manage.html', locals())
     else:
-        return render(request, 'exam/exam_manage_denied.html')
+        return render(request, 'denied.html')
 
 
 
@@ -358,7 +358,7 @@ def member_manage(request):
             member_list = UserInfo.objects.filter(cid=user.cid)
             return render(request, 'member/member_manage.html', {'member_list': member_list})
         else:
-            return render(request, 'member/member_manage_denied.html')
+            return render(request, 'denied.html')
     else:
         return render(request, 'account/page-login.html', {'error_msg': ''})
 
@@ -368,7 +368,7 @@ def member_manage(request):
 # 2. 如果 flag 为真，则进入下一步判断。
 # 3. 如果 rank.user_type.caption 的值为'admin'，则获取所有的 UserInfo 对象，并将其赋给 member_list 变量。
 # 4. 将 member_list 作为参数传递给 render 函数，渲染 member/member_manage.html 模板，并返回该模板的响应。
-# 5. 如果 rank.user_type.caption 的值不为'admin'，则渲染 member/member_manage_denied.html 模板，并返回该模板的响应。
+# 5. 如果 rank.user_type.caption 的值不为'admin'，则渲染 denied.html 模板，并返回该模板的响应。
 # 6. 如果 flag 为假，则渲染 account/page-login.html 模板，并将空字符串作为 error_msg 参数传递给 render 函数，最后返回该模板的响应。
 def delete_member(request):
     (flag, rank) = check_cookie(request)
@@ -380,7 +380,7 @@ def delete_member(request):
             member_list = UserInfo.objects.filter(cid=user.cid)
             return render(request, 'member/member_manage.html', {'member_list': member_list})
         else:
-            return render(request, 'member/member_manage_denied.html')
+            return render(request, 'denied.html')
     else:
         return render(request, 'account/page-login.html', {'error_msg': ''})
 
@@ -415,7 +415,7 @@ def edit_member(request):
                 edit_stu_obj = UserInfo.objects.get(studentNum=edit_member_id)
                 return render(request, 'member/edit_member.html', locals())
         else:
-            return render(request, 'member/member_manage_denied.html')
+            return render(request, 'denied.html')
     else:
         return render(request, 'account/page-login.html', {'error_msg': ''})
 
