@@ -139,25 +139,7 @@ def total(request):
             return render(request, 'attendance/total.html', locals())
     else:
         return render(request, 'denied.html')
-    #
-    # if request.method == 'POST':
-    #     nowdate = datetime.datetime.now()#    a. 获取当前日期和星期几。
-    #     weekDay = datetime.datetime.weekday(nowdate)
-    #     firstDay = nowdate - datetime.timedelta(days=weekDay)
-    #     lastDay = nowdate + datetime.timedelta(days=6 - weekDay)
-    #     info_list = Attendence.objects.filter(date__gte=firstDay, date__lte=lastDay,stu__cid=user.cid).values( \
-    #         'stu', 'stu__username', 'stu__cid__name', ).annotate(total_time=Sum('duration')).order_by()
-    #     info_list = json.dumps(list(info_list), cls=DecimalEncoder)
-    #     return HttpResponse(info_list)
-    # else:
-    #     nowdate = datetime.datetime.now()
-    #     weekDay = datetime.datetime.weekday(nowdate)
-    #     firstDay = nowdate - datetime.timedelta(days=weekDay)
-    #     lastDay = nowdate + datetime.timedelta(days=6 - weekDay)
-    #     info_list = Attendence.objects.filter(date__gte=firstDay, date__lte=lastDay,stu__cid=user.cid).values('stu', 'stu__username',
-    #                                                                                   'stu__cid__name').annotate(
-    #         total_time=Sum('duration')).order_by()
-    #     return render(request, 'attendance/total.html', locals())
+
 
 
 

@@ -45,12 +45,12 @@ class UserInfo(models.Model):
 class Attendence(models.Model):
     #签到表   字段：用户，签到时间，签退时间，描述   其他是为了方便操作加的字段可不写
     stu = models.ForeignKey('UserInfo',on_delete=models.CASCADE)
-    # cur_time = models.DateTimeField(auto_now_add=True)
+
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
     duration = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     date = models.DateField(default=timezone.now)
-    # state=models.BooleanField(default=False)
+
     is_leave = models.BooleanField(default=False)
     detail = models.TextField(default='无')
     leave_count = models.IntegerField(default=0)
@@ -59,9 +59,9 @@ class Attendence(models.Model):
         return self.stu.username
 
 
-# 公告表设计
+# 通知表设计
 class Notice(models.Model):
-    # 公告表  字段：发布人,发布日期，发布标题，发布内容，发布级别
+    # 通知表  字段：发布人,发布日期，发布标题，发布内容，发布级别
     author = models.ForeignKey('UserInfo',on_delete=models.CASCADE)
     post_date = models.DateTimeField(auto_now=True)
     head = models.TextField(max_length=200)
@@ -69,9 +69,9 @@ class Notice(models.Model):
     level = models.IntegerField(default=0)
 
 
-# 请假表设计
+# 事项
 class Leave(models.Model):
-    # 请假表 字段：用户，开始时间，结束时间，请假原因
+    # 事项表 字段：用户，开始时间，结束时间，请假原因
     user = models.ForeignKey(to='UserInfo',on_delete=models.CASCADE)
     start_time = models.DateField(null=True, blank=True)
     end_time = models.DateField(null=True, blank=True)
