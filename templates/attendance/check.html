@@ -77,19 +77,34 @@
                 </button>
 
                 <script>
+
+
                     function confirmSign() {
                         var signType = "{% if sign_flag == True %}签到{% else %}签退{% endif %}";
                         var message = "确定要进行" + signType + "吗？";
                         if (confirm(message)) {
 
+                            $('.panel-body').on('click', '#sign_btn', function () {
+                                $.post('/check/', {'sign': "{{ sign_flag }}"}, function (ret) {
+                                    window.location.reload(true)
+                                    alert('操作成功')
+                                })
 
+                            })
+                            $.ajaxSetup({
+                                data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+                            });
                         } else {
-                            // 如果用户点击了取消，则不执行任何操作
-                            // 可以根据需要添加额外的处理逻辑
+
+                            alert("取消成功")
+
                         }
                     }
-                </script>
 
+                </script>
+                <script>
+
+                </script>
             </div>
 
             <div class="table-responsive">
@@ -183,18 +198,7 @@
         </div>
     </div>
     {#面板结束#}
-    <script>
-        $('.panel-body').on('click', '#sign_btn', function () {
-            $.post('/check/', {'sign': "{{ sign_flag }}"}, function (ret) {
-                window.location.reload(true)
-                alert('操作成功')
-            })
 
-        })
-        $.ajaxSetup({
-            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
-        });
-    </script>
 
 
 
