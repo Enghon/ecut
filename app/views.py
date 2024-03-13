@@ -104,7 +104,7 @@ def check(request):
                     sign_flag = True
             else:
                 sign_flag = True
-            if user.user_type.caption =='admin':
+            if user.user_type.caption =='班主任':
                 att_list = Attendence.objects.filter(stu__cid=user.cid).order_by('-id')
             else:
                 att_list = Attendence.objects.filter(stu=user).order_by('-id')
@@ -118,7 +118,7 @@ def total(request):
     (flag, user) = check_cookie(request)
     (flag, rank) = check_cookie(request)
     user = rank
-    if rank.user_type.caption == 'admin':
+    if rank.user_type.caption == '班主任':
         if request.method == 'POST':
             nowdate = datetime.datetime.now()#    a. 获取当前日期和星期几。
             weekDay = datetime.datetime.weekday(nowdate)
@@ -171,7 +171,7 @@ def classManage(request):
     (flag, rank) = check_cookie(request)
     print('flag', flag)
     if flag:
-        if rank.user_type.caption == 'admin':
+        if rank.user_type.caption == '班主任':
             class_list = ClassInfo.objects.all()
 
 
@@ -186,7 +186,7 @@ def edit_class(request):
     (flag, rank) = check_cookie(request)
     print('flag', flag)
     if flag:
-        if rank.user_type.caption == 'admin':
+        if rank.user_type.caption == '班主任':
             if request.method == 'POST':
                 pre_edit_id = request.POST.get('edit_id')
                 class_name = request.POST.get('edit_class_name')
@@ -226,7 +226,7 @@ def delete_class(request):
     (flag, rank) = check_cookie(request)
     print('flag', flag)
     if flag:
-        if rank.user_type.caption == 'admin':
+        if rank.user_type.caption == '班主任':
             delete_id = request.GET.get('delete_id')
             ClassInfo.objects.filter(id=delete_id).delete()
             return redirect('/classManage/')
@@ -250,7 +250,7 @@ def notice(request):
 @is_login
 def noticeManage(request):
     (flag, user) = check_cookie(request)
-    if user.user_type.caption == 'admin' or user.user_type.caption == '学生管理员':
+    if user.user_type.caption == '班主任' or user.user_type.caption == '学生班主任':
         if request.method == 'POST':
             title = request.POST.get('title')
             content = request.POST.get('content')
@@ -306,7 +306,7 @@ def exam(request):
 @is_login
 def exam_manage(request):
     (flag, user) = check_cookie(request)
-    if user.user_type.caption == 'admin':
+    if user.user_type.caption == '班主任':
         if request.method == 'POST':
             title = request.POST.get('title')
 
@@ -336,7 +336,7 @@ def member_manage(request):
     (flag, rank) = check_cookie(request)
     (flag, user) = check_cookie(request)
     if flag:
-        if rank.user_type.caption == 'admin':
+        if rank.user_type.caption == '班主任':
             member_list = UserInfo.objects.filter(cid=user.cid)
             return render(request, 'member/member_manage.html', {'member_list': member_list})
         else:
@@ -348,15 +348,15 @@ def member_manage(request):
 # 删除成员
 # 1. 首先，调用 check_cookie 函数，传入 request 参数，并将返回值赋给 (flag, rank) 元组。
 # 2. 如果 flag 为真，则进入下一步判断。
-# 3. 如果 rank.user_type.caption 的值为'admin'，则获取所有的 UserInfo 对象，并将其赋给 member_list 变量。
+# 3. 如果 rank.user_type.caption 的值为'班主任'，则获取所有的 UserInfo 对象，并将其赋给 member_list 变量。
 # 4. 将 member_list 作为参数传递给 render 函数，渲染 member/member_manage.html 模板，并返回该模板的响应。
-# 5. 如果 rank.user_type.caption 的值不为'admin'，则渲染 denied.html 模板，并返回该模板的响应。
+# 5. 如果 rank.user_type.caption 的值不为'班主任'，则渲染 denied.html 模板，并返回该模板的响应。
 # 6. 如果 flag 为假，则渲染 account/page-login.html 模板，并将空字符串作为 error_msg 参数传递给 render 函数，最后返回该模板的响应。
 def delete_member(request):
     (flag, rank) = check_cookie(request)
     (flag, user) = check_cookie(request)
     if flag:
-        if rank.user_type.caption == 'admin':
+        if rank.user_type.caption == '班主任':
             delete_sno = request.GET.get('delete_sno')
             UserInfo.objects.get(studentNum=delete_sno).delete()
             member_list = UserInfo.objects.filter(cid=user.cid)
@@ -371,7 +371,7 @@ def delete_member(request):
 def edit_member(request):
     (flag, rank) = check_cookie(request)
     if flag:
-        if rank.user_type.caption == 'admin':
+        if rank.user_type.caption == '班主任':
             if request.method == 'POST':
                 student_num = request.POST.get('student_num')
                 username = request.POST.get('username')
